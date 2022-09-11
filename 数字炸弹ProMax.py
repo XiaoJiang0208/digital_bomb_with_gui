@@ -5,7 +5,7 @@ python编程复习(毕生所学doge)
 
 
 #导入gui库
-from operator import le
+import random
 from tkinter import *
 
 
@@ -14,9 +14,10 @@ mainWindow = Tk()
 
 
 #全局变量
+BOOM = random.randint(0, 100)
 Min = 0
 Max = 100
-LEDtext = "enter the password(" + str(Min) + "~" + str(Max) + ")"
+LEDtext = "enter the password(" + str(Min) + "~" + str(Max) + "):"
 ans = [0]
 
 def initMainWindow():
@@ -25,24 +26,25 @@ def initMainWindow():
     mainWindow.geometry("1200x800")
     mainWindow.resizable(0,0)
 
-def setLEDtestSize(min, max, ans):
+def setLEDtext(min, max, ans):
     '''设置LDE数字范围'''
     LEDtext = "(" + str(min) + "~" + str(max) + "):" + str(ans)
     LED.configure(text=LEDtext)
-    mainWindow.after(1000, setLEDtestSize)
+    mainWindow.after(1000, setLEDtext)
 
 
 #button event-----
 #tool
 def addNum(num):
-    ans.append(num)
+    '''添加数字'''
     ans[0]=0
+    ans.append(num)
     for i in range(1,len(ans)):
         if ans[len(ans)-i] == 0:
             ans[0]*10
         ans[0]+=ans[len(ans)-i]*(10**i)
     ans[0]=ans[0]//10
-    setLEDtestSize(Min, Max, ans[0])
+    setLEDtext(Min, Max, ans[0])
 #events
 def num1():
     addNum(1)
@@ -64,7 +66,16 @@ def num9():
     addNum(9)
 def num0():
     addNum(0)
-    
+def numDel():
+    '''删除输入'''
+    for i in range(1,len(ans)):
+        ans.pop(len(ans)-i)
+    ans[0]=0
+    setLEDtext(Min, Max, "")
+def numOK():
+    gamemode()
+
+
 def drawMainWindow():
     '''draw the window'''
     global photo
@@ -74,7 +85,7 @@ def drawMainWindow():
     
     #LED
     global LED
-    LED = Label(mainWindow, text=LEDtext, bg="#edd605")
+    LED = Label(mainWindow, text=LEDtext, bg="#edd605", font=("",10))
     LED.pack(pady=(160,0), padx=(30,0))
     
     #add number keyBoark
@@ -111,32 +122,62 @@ def drawMainWindow():
     key789 = Frame(keyBoard, bg="#141c0c")
     key789.pack()
     global but7
-    but7 = Button(key789, text="4", bg="#b99f7d", command=num7)
+    but7 = Button(key789, text="7", bg="#b99f7d", command=num7)
     but7.pack(side=LEFT, padx=5, pady=5, ipadx=5)
     global but8
-    but8 = Button(key789, text="5", bg="#b99f7d", command=num8)
+    but8 = Button(key789, text="8", bg="#b99f7d", command=num8)
     but8.pack(side=LEFT, padx=5, pady=5, ipadx=5)
     global but9
-    but9 = Button(key789, text="6", bg="#b99f7d", command=num6)
+    but9 = Button(key789, text="9", bg="#b99f7d", command=num9)
     but9.pack(side=LEFT, padx=5, pady=5, ipadx=5)
     #del,0,ok
     global keyD0O
     keyD0O = Frame(keyBoard, bg="#141c0c")
     keyD0O.pack()
     global butDel
-    butDel = Button(keyD0O, text="*", bg="#b99f7d")
+    butDel = Button(keyD0O, text="*", bg="#b99f7d", command=numDel)
     butDel.pack(side=LEFT, padx=5, pady=5, ipadx=6)
     global but0
     but0 = Button(keyD0O, text="0", bg="#b99f7d", command=num0)
     but0.pack(side=LEFT, padx=5, pady=5, ipadx=5)
     global butOK
-    butOK = Button(keyD0O, text="#", bg="#b99f7d")
+    butOK = Button(keyD0O, text="#", bg="#b99f7d", command=numOK)
     butOK.pack(side=LEFT, padx=5, pady=5, ipadx=5)
     
     #Title
     global title1
     title1 = Label(mainWindow, text="数字炸弹ProMax", font=("", 80), fg="#7cdcfe").pack(side=BOTTOM)
 
+
+def gameover():
+    '''make Game Over window'''
+    gameOverWindow = Toplevel()
+    gameOverWindow.title("Game Over!")
+    gameOverWindow.resizable(0,0)
+    global photoBoom
+    photoBoom = PhotoImage(file="boom.gif")
+    global photoBoomLabel
+    photoBoomLabel = Label(gameOverWindow, image=photoBoom).pack()
+    global overGame
+    overGame = Button(gameOverWindow, text="退出", font=("",50), command=exit).pack(side=TOP)
+    gameOverWindow.mainloop()
+
+def gamemode():
+    '''游戏玩法实现'''
+    global Max
+    global Min
+    if ans[0] == BOOM:
+        gameover()
+    else:
+        if ans[0] > BOOM and ans[0] < Max:
+            Max = ans[0]
+            numDel()
+        if ans[0] < BOOM and ans[0] > Min:
+            Min = ans[0]
+            numDel()
+        
+            
+        
 
 if __name__ == "__main__":
     initMainWindow()
