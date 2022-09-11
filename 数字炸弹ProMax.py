@@ -27,7 +27,7 @@ def initMainWindow():
 
 def setLEDtestSize(min, max, ans):
     '''设置LDE数字范围'''
-    LEDtext = "enter the password(" + str(min) + "~" + str(max) + "):" + str(ans)
+    LEDtext = "(" + str(min) + "~" + str(max) + "):" + str(ans)
     LED.configure(text=LEDtext)
     mainWindow.after(1000, setLEDtestSize)
 
