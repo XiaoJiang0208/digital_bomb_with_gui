@@ -81,7 +81,7 @@ def drawMainWindow():
     global photo
     photo = PhotoImage(file="c4.gif")
     global photoLabel
-    photoLabel = Label(mainWindow, image=photo).place(x=0, y=0)
+    photoLabel = Label(mainWindow).place(x=0, y=0)
     
     #LED
     global LED
